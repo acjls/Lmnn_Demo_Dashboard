@@ -11,6 +11,7 @@ from dash.dependencies import ClientsideFunction
 
 # Initialize Dash app
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
+server = app.server
 
 # Define styles for sidebar and content
 SIDEBAR_STYLE = {
@@ -360,4 +361,4 @@ def update_power_and_plot(n):
 
 # Run the app
 if __name__ == "__main__":
-    app.run_server(port=8888)
+    app.run_server(debug=False)
