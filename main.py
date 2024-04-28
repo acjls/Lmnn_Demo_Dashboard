@@ -5,6 +5,7 @@ from datetime import datetime as dt
 import plotly.graph_objs as go
 import numpy as np
 import pandas as pd
+import pytz
 from dash_bootstrap_components import Card, CardHeader
 from dash.dependencies import ClientsideFunction
 
@@ -192,15 +193,17 @@ current_soc_card = dbc.Card(
     style={"background-color": "#333", "width": "15%", "margin-left": "100px"}  # Set the background color to grey and add left margin
 )
 
-def get_current_time():
-    return dt.now().strftime("%H:%M")
+def get_current_time_berlin():
+    berlin_timezone = pytz.timezone('Europe/Berlin')
+    berlin_time = dt.now(berlin_timezone)
+    return berlin_time.strftime("%H:%M")
 
 current_time_card = dbc.Card(
     [
         dbc.CardBody(
             [
                 html.Div("Uhrzeit", style={"font-size": "18px", "color": "white", "text-align": "center", "margin-bottom": "10px"}),
-                html.Div(id="current-time", children=get_current_time(), style={"font-size": "32px", "color": "white", "text-align": "center"})
+                html.Div(id="current-time", children=get_current_time_berlin(), style={"font-size": "32px", "color": "white", "text-align": "center"})
             ]
         )
     ],
