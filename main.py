@@ -10,7 +10,7 @@ from dash.dependencies import ClientsideFunction
 
 
 # Initialize Dash app
-app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
 
 # Define styles for sidebar and content
