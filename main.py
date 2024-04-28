@@ -261,7 +261,7 @@ app.layout = html.Div([dcc.Location(id="url"), sidebar, content, interval_compon
     [Input("interval-component", "n_intervals")]
 )
 def update_time(n):
-    return get_current_time()
+    return get_current_time_berlin()
 
 # Create a callback to update the current power and the bar plot every 2 seconds
 # Modify the callback function to include the loading of the DataFrame and extraction of the last value
