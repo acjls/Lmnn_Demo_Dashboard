@@ -42,8 +42,8 @@ sidebar = html.Div(
             id='date-picker',
             min_date_allowed=dt(2022, 1, 1),
             max_date_allowed=dt(2024, 12, 31),
-            initial_visible_month=dt.now(),
-            date=dt.now()
+            initial_visible_month=dt.now(pytz.timezone('Europe/Berlin')),
+            date=dt.now(pytz.timezone('Europe/Berlin'))
         ),
         html.Div(style={'margin-bottom': '20px'}),  # Add some margin-bottom for space
         dbc.Nav(
@@ -103,7 +103,7 @@ df.loc[df.State_of_Charge>100, 'State_of_Charge'] = 100
 state_of_charge = df['State_of_Charge']
 
 # Get current minute of the day
-current_minute = dt.now().hour * 60 + dt.now().minute
+current_minute = dt.now(pytz.timezone('Europe/Berlin')).hour * 60 + dt.now(pytz.timezone('Europe/Berlin')).minute
 
 # Create figure
 fig = go.Figure()
@@ -298,7 +298,7 @@ def update_power_and_plot(n):
     df.loc[df.State_of_Charge > 100, 'State_of_Charge'] = 100
 
     # Get the last value of 'State_of_Charge' from the DataFrame
-    current_soc = df['State_of_Charge'][dt.now().hour * 60 + dt.now().minute]
+    current_soc = df['State_of_Charge'][dt.now(pytz.timezone('Europe/Berlin')).hour * 60 + dt.now(pytz.timezone('Europe/Berlin')).minute]
 
     # Determine marker color based on power value
     marker_color = 'rgba(0, 102, 0, 0.5)' if power >= 0 else 'rgba(204, 0, 0, 0.5)'
@@ -326,7 +326,7 @@ def update_power_and_plot(n):
     current_soc_text = f"{round(current_soc)} %"
 
     # Update time series plot data
-    current_minute = dt.now().hour * 60 + dt.now().minute
+    current_minute = dt.now(pytz.timezone('Europe/Berlin')).hour * 60 + dt.now(pytz.timezone('Europe/Berlin')).minute
     time_data = df['Time'][:current_minute]
     soc_data = df['State_of_Charge'][:current_minute]
 
