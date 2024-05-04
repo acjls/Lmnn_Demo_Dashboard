@@ -24,7 +24,9 @@ stylesheets = [
 
 # Initialize Dash app
 dash._dash_renderer._set_react_version('18.2.0')
-app = dash.Dash(__name__, external_stylesheets=stylesheets, assets_folder='assets', assets_url_path='/assets/')
+app = dash.Dash(__name__, external_stylesheets=stylesheets)
+app.title = 'Lumenion Demo Dashboard'
+app._favicon = "favico.ico"
 server = app.server
 
 
