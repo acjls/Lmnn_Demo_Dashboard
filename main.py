@@ -1,342 +1,200 @@
 import dash
-import dash_bootstrap_components as dbc
-from dash import Input, Output, dcc, html
+from dash import Dash, dcc, html, Input, Output, callback
+import dash_mantine_components as dmc
+
 from datetime import datetime as dt
 import plotly.graph_objs as go
 import numpy as np
 import pandas as pd
 import pytz
-from dash_bootstrap_components import Card, CardHeader
-from dash.dependencies import ClientsideFunction
+import random
 
+from sidebar import get_sidebar
+
+
+stylesheets = [
+    "https://unpkg.com/@mantine/dates@7/styles.css",
+    "https://unpkg.com/@mantine/code-highlight@7/styles.css",
+    "https://unpkg.com/@mantine/charts@7/styles.css",
+    "https://unpkg.com/@mantine/carousel@7/styles.css",
+    "https://unpkg.com/@mantine/notifications@7/styles.css",
+    "https://unpkg.com/@mantine/nprogress@7/styles.css",
+    "styles.css"
+]
 
 # Initialize Dash app
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+dash._dash_renderer._set_react_version('18.2.0')
+app = dash.Dash(__name__, external_stylesheets=stylesheets, assets_folder='assets', assets_url_path='/assets/')
 server = app.server
 
-# Define styles for sidebar and content
-SIDEBAR_STYLE = {
-    "position": "fixed",
-    "top": 0,
-    "left": 0,
-    "bottom": 0,
-    "width": "16rem",
-    "padding": "2rem 1rem",
-    "background-color": "#333",  # Darker background color
-    "color": "#fff",  # White text color
-}
 
-CONTENT_STYLE = {
-    "margin-left": "18rem",
-    "margin-right": "2rem",
-    "padding": "2rem 1rem",
-}
-
-# Create sidebar layout
-sidebar = html.Div(
-    [
-        html.Img(src="https://lumenion.com/wp-content/uploads/2022/08/logo.svg", height="50px"),
-        html.Hr(style={'background-color': 'white'}),
-        html.P("Demo Dashboard", className="lead", style={"color": "#fff"}),  # White text color
-        dcc.DatePickerSingle(
-            id='date-picker',
-            min_date_allowed=dt(2022, 1, 1),
-            max_date_allowed=dt(2024, 12, 31),
-            initial_visible_month=dt.now(pytz.timezone('Europe/Berlin')),
-            date=dt.now(pytz.timezone('Europe/Berlin'))
-        ),
-        html.Div(style={'margin-bottom': '20px'}),  # Add some margin-bottom for space
-        dbc.Nav(
-            [
-                dbc.NavLink("Heute", href="/", active="exact", style={"color": "white"}),
-                dbc.NavLink("Gestern", href="/page-1", active="exact", style={"color": "white"}),
-                dbc.NavLink("Letzte Woche", href="/page-2", active="exact", style={"color": "white"}),
-                dbc.NavLink("Letzter Monat", href="/page-3", active="exact", style={"color": "white"}),
-                dbc.NavLink("Gesamter Zeitraum", href="/page-4", active="exact", style={"color": "white"}),
-            ],
-            vertical=True,
-            pills=True,
-        ),
-        html.Hr(style={'background-color': 'white'}),  # Optional: Add a horizontal line for separation
-        dbc.Nav(
-            [
-                dbc.NavLink("Einstellungen", href="/settings", active="exact", style={"color": "white"}),
-                dbc.NavLink("Hilfe", href="/help", active="exact", style={"color": "white"}),
-            ],
-            vertical=True,
-            pills=True,
-        ),
-    ],
-    style=SIDEBAR_STYLE,
-)
-
-# Create content layout
-content = html.Div(id="page-content", style=CONTENT_STYLE)
-
-# Create callback to render page content
-@app.callback(Output("page-content", "children"), [Input("url", "pathname")])
-def render_page_content(pathname):
-    if pathname == "/":
-        return html.P("This is the content of the home page!")
-    elif pathname == "/page-1":
-        return html.P("This is the content of page 1. Yay!")
-    elif pathname == "/page-2":
-        return html.P("Oh cool, this is page 2!")
-    # If the user tries to reach a different page, return a 404 message
-    return html.Div(
-        [
-            html.H1("404: Not found", className="text-danger"),
-            html.Hr(),
-            html.P(f"The pathname {pathname} was not recognised..."),
-        ],
-        className="p-3 bg-light rounded-3",
+# Interval
+interval = dcc.Interval(
+        id='interval-component',
+        interval=2000,  # in milliseconds
+        n_intervals=0
+    )
+interval2 = dcc.Interval(
+        id='interval-component2',
+        interval=10000,  # in milliseconds
+        n_intervals=0
     )
 
-# Create time array from 0 to 1440 minutes (24 hours)
-# Read data from Excel file
-df = pd.read_excel('your_file.xlsx')  # Replace 'your_file.xlsx' with the path to your Excel file
-df["State_of_Charge"] = df["State_of_Charge"].interpolate(method="quadratic")
-# Assuming your Excel file has 'Time' and 'State_of_Charge' columns
-time = df['Time']
-df['State_of_Charge'] = df['State_of_Charge'] * 100 + 20
-df.loc[df.State_of_Charge>100, 'State_of_Charge'] = 100
-state_of_charge = df['State_of_Charge']
 
-# Get current minute of the day
-current_minute = dt.now(pytz.timezone('Europe/Berlin')).hour * 60 + dt.now(pytz.timezone('Europe/Berlin')).minute
-
-# Create figure
-fig = go.Figure()
-
-# Add area plot
-fig.add_trace(go.Scatter(x=time[:current_minute], y=state_of_charge[:current_minute], fill='tozeroy', mode='none', line=dict(color='rgba(0,100,0,0.5)', width=1), showlegend=False, fillgradient=dict(
-        type='vertical',
-        colorscale=['rgba(204, 0, 0, 0.5)', 'rgba(0, 102, 0, 0.5)', 'rgba(0, 102, 0, 0.5)']
-    )))
-
-# Update layout
-fig.update_layout(
-    title=dict(
-        text="Ladestand des Lumenion Wärmespeichers",
-        x=0.5,  # Set x to 0.5 to center the title
-        font=dict(
-            size=28  # Set the font size to 24
-        )
-    ),
-    paper_bgcolor="white",
-    xaxis=dict(
-        title="Uhrzeit",
-        tickmode="array",
-        tickvals=np.arange(0, 1441, 60),  # Tick every hour
-        ticktext=[str(dt(2022, 1, 1, hour // 60 % 24, hour % 60).strftime('%H:%M')) for hour in np.arange(0, 1441, 60)],  # Format tick text as HH:MM
-        range=[0, 1440]  # Set x-axis range from start to end of the day
-    ),
-    yaxis=dict(title="Ladestand (%)",
-               range=[0, 101],
-               ),
-    margin=dict(l=20, r=20, t=40, b=20),
-)
-
-# Render the plot
-plotly_figure = dcc.Graph(id='state-of-charge-plot', figure=fig)
+# sidebar
+sidebar = get_sidebar()
 
 
+# grid
+grid_style = {
+    "border": f"1px solid rgba(51, 51, 51, 0.5)",
+    "textAlign": "center",
+    "padding-left": "2rem",
+    "padding-right": "2rem"
+}
+grid_style2 = {
+    "border": f"1px solid rgba(51, 51, 51, 0.5)",
+    "textAlign": "center",
+    "padding-left": "2rem",
+    "padding-right": "2rem",
+    "padding-top": "2rem",
+    "padding-bottom": "2rem",
+}
 
-category = ""
-value = -2700
-
-# Create bar plot
-bar_fig = go.Figure(go.Bar(x=[category], y=[value], marker_color='rgb(55, 83, 109)', width=0.5))  # Adjust width of the bar
-
-# Update bar plot layout
-bar_fig.update_layout(
-    title=dict(
-        text="Leistung",
-        x=0.6,  # Set x to 0.5 to center the title
-        font=dict(
-            size=28  # Set the font size
-        )
-    ),
-    margin=dict(l=20, r=20, t=40, b=20),
-    paper_bgcolor="white",
-    height=400,  # Set the height of the bar plot
-    yaxis=dict(range=[-5000, 5000]),  # Set y-axis range
-    yaxis_title="Leistung [kW]"  # Set y-axis title
-)
-
-# Render the bar plot
-bar_plot = dcc.Graph(id='bar-plot', figure=bar_fig)
-
-# Wrap the html.Div inside a dbc.Card component
-current_power_card = dbc.Card(
+current_power_card = dmc.Card(
     [
-        dbc.CardBody(
-            [
-                html.Div("Aktuelle Leistung", style={"font-size": "18px", "color": "white", "text-align": "center", "margin-bottom": "10px"}),
-                html.Div(id="current-power", style={"font-size": "32px", "color": "white", "text-align": "center"})
-            ]
+        #html.Div("Ladeleistung", style={"font-size": "18px", "color": "white", "text-align": "center", "margin-bottom": "10px"}),
+        html.Div(id="current-power", style={"font-size": "32px", "color": "white", "text-align": "center"})
+    ],
+    style={"background-color": "#333", "width": "60%", "border": "1px solid white"}  # Set the background color to grey and add left margin
+)
+
+current_soc_card = dmc.Card(
+    [
+        #html.Div("Ladestand", style={"font-size": "18px", "color": "white", "text-align": "center", "margin-bottom": "10px"}),
+        html.Div(id="current-soc", style={"font-size": "32px", "color": "white", "text-align": "center"})
+    ],
+    style={"background-color": "#333", "width": "50%", "border": "1px solid white"}  # Set the background color to grey and add left margin
+)
+
+current_power_steam_card = dmc.Card(
+    [
+        #html.Div("Dampfleistung", style={"font-size": "18px", "color": "white", "text-align": "center", "margin-bottom": "10px"}),
+        html.Div(id="current-power_steam", style={"font-size": "32px", "color": "white", "text-align": "center"})
+    ],
+    style={"background-color": "#333", "width": "60%", "border": "1px solid white"}  # Set the background color to grey and add left margin
+)
+
+grid_kpi = dmc.Grid(
+        children=[
+            dmc.GridCol(current_power_card, style={   "padding-left": "8rem",
+                                                    "padding-right": "0rem",
+                                                    "padding-top": "2rem",
+                                                    "padding-bottom": "2rem",
+                                                     }, span=3),
+            dmc.GridCol(current_soc_card, style={   "padding-left": "16rem",
+                                                    "padding-right": "0rem",
+                                                    "padding-top": "2rem",
+                                                    "padding-bottom": "2rem",
+                                                     }, span=6),
+            dmc.GridCol(current_power_steam_card, style={   "padding-left": "8rem",
+                                                    "padding-right": "0rem",
+                                                    "padding-top": "2rem",
+                                                    "padding-bottom": "2rem",
+                                                     }, span=3),
+        ],
+        style={"padding": "0rem 0rem 0rem 16rem"}
         )
-    ],
-    style={"background-color": "#333", "width": "15%"}  # Set the background color to grey
-)
 
-# Create a new card for State of Charge (SoC)
-current_soc_card = dbc.Card(
-    [
-        dbc.CardBody(
-            [
-                html.Div("Ladestand", style={"font-size": "18px", "color": "white", "text-align": "center", "margin-bottom": "10px"}),
-                html.Div(id="current-soc", style={"font-size": "32px", "color": "white", "text-align": "center"})
-            ]
+
+grid_plot = dmc.Grid(
+        children=[
+            dmc.GridCol(dcc.Graph(id='live-update-graph-bar'), style=grid_style, span=3),
+            dmc.GridCol(dcc.Graph(id='live-update-graph-soc'), style=grid_style, span=6),
+            dmc.GridCol(dcc.Graph(id='live-update-graph-bar_steam'), style=grid_style, span=3),
+        ],
+        gutter="xl",
+        style={"padding": "0rem 0rem 0rem 16rem"}
         )
-    ],
-    style={"background-color": "#333", "width": "15%", "margin-left": "100px"}  # Set the background color to grey and add left margin
-)
 
-def get_current_time_berlin():
-    berlin_timezone = pytz.timezone('Europe/Berlin')
-    berlin_time = dt.now(berlin_timezone)
-    return berlin_time.strftime("%H:%M")
 
-current_time_card = dbc.Card(
-    [
-        dbc.CardBody(
-            [
-                html.Div("Uhrzeit", style={"font-size": "18px", "color": "white", "text-align": "center", "margin-bottom": "10px"}),
-                html.Div(id="current-time", children=get_current_time_berlin(), style={"font-size": "32px", "color": "white", "text-align": "center"})
-            ]
-        )
-    ],
-    style={"background-color": "#333", "width": "15%", "position": "absolute", "top": "2rem", "right": "2rem"}  # Set the background color to grey and position the card
-)
-
-# Combine both cards in a single row
-card_row = html.Div(
-    [
-        current_power_card,
-        current_soc_card,
-        current_time_card
-    ],
-    style={'display': 'flex', 'justify-content': 'start', 'margin-bottom': '20px'}  # Use flexbox to align cards horizontally with space between
-)
-
-# Adjust the width of the time series plot
-time_series_width = "90%"  # Set width to 100% of the remaining space
-bar_plot_width = "15%"  # Set width to 25% of the content area
-
-# Combine content with plots
-content = html.Div(
-    [
-        card_row,  # Include the row of cards
-        html.Hr(style={'margin': '20px 30px 20px 0px'}),  # Add a horizontal line separator
-        html.Div(
-            [
-                html.Div(
-                    [
-                        html.Div(bar_plot, style={'width': bar_plot_width}),
-                        html.Div(plotly_figure, style={'flex': '1', 'width': time_series_width, 'margin-left': '30px'})
-                    ],
-                    style={'display': 'flex', 'flexDirection': 'row'}
-                )
-            ],
-            #style={'display': 'flex'}
-        ),
-        html.Hr(style={'margin': '20px 30px 20px 0px'}),  # Add a horizontal line separator
-    ],
-    style={'margin-left': '20rem', 'margin-top': '2rem'}  # Adjust margin-left to match the width of the sidebar
-)
-# Create an interval component to update the current power every 2 seconds
-interval_component = dcc.Interval(
-    id='interval-component',
-    interval=2000,  # in milliseconds
-    n_intervals=0
-)
-
-# Set app layout
-app.layout = html.Div([dcc.Location(id="url"), sidebar, content, interval_component, current_time_card])
-
-# Callback to update the current time every second
+# bar plot leistung
 @app.callback(
-    Output("current-time", "children"),
-    [Input("interval-component", "n_intervals")]
+    Output('live-update-graph-bar', 'figure'),
+    Output("current-power", "children"),
+    [Input('interval-component', 'n_intervals')]
 )
-def update_time(n):
-    return get_current_time_berlin()
+def update_graph_live(n_intervals):
+    CAPACITY = 20000  # kWh
 
-# Create a callback to update the current power and the bar plot every 2 seconds
-# Modify the callback function to include the loading of the DataFrame and extraction of the last value
-@app.callback(
-    [Output("current-power", "children"),
-     Output("bar-plot", "figure"),
-     Output("current-soc", "children"),
-     Output("state-of-charge-plot", "figure")],  # Add Output for time series plot
-    [Input("interval-component", "n_intervals")]
-)
-def update_power_and_plot(n):
-    global last_generated_value  # Declare last_generated_value as global
+    # read excel
+    df_soc = pd.read_excel("your_file.xlsx")
+    df_soc["State_of_Charge"] = df_soc["State_of_Charge"].interpolate(method="quadratic")
+    df_soc['State_of_Charge'] = df_soc['State_of_Charge'] * 100
+    df_soc.loc[df_soc.State_of_Charge > 100, 'State_of_Charge'] = 100
+    df_soc.loc[df_soc.State_of_Charge < 3, 'State_of_Charge'] = 3
 
-    # Initialize last_generated_value if it's not defined yet
-    if 'last_generated_value' not in globals():
-        last_generated_value = None
+    # calc current power
+    current_minute = dt.now(pytz.timezone('Europe/Berlin')).hour * 60 + dt.now(pytz.timezone('Europe/Berlin')).minute
+    power_cur = (df_soc.loc[current_minute, "State_of_Charge"] - df_soc.loc[current_minute-1, "State_of_Charge"])/100*CAPACITY*60
+    power_cur = power_cur + np.random.randint(-50, 50)
+    if power_cur < 0:
+        power_cur = 0
 
-    # Generate a random power value within a range of 50 from the last generated value
-    if last_generated_value is None:
-        power = np.random.randint(-5000, 5000)  # If no last value, generate any random value
-    else:
-        min_value = max(-5000, last_generated_value - 50)  # Ensure minimum value is 1
-        max_value = min(5000, last_generated_value + 50)  # Ensure maximum value is 100
-        power = np.random.randint(min_value, max_value + 1)
+    # Create a Plotly bar plot
+    bar_fig = go.Figure()
+    bar_fig.add_trace(go.Bar(x=[""], y=[power_cur], marker_color='rgba(212, 0, 0, 0.7)', width=0.5))
 
-    # Update the last generated value
-    last_generated_value = power
-
-    # Load the DataFrame from the Excel file
-    df = pd.read_excel('your_file.xlsx')
-    df["State_of_Charge"] = df["State_of_Charge"].interpolate(method="quadratic")
-    # Assuming your Excel file has 'Time' and 'State_of_Charge' columns
-    df['State_of_Charge'] = df['State_of_Charge'] * 100 + 20
-    df.loc[df.State_of_Charge > 100, 'State_of_Charge'] = 100
-
-    # Get the last value of 'State_of_Charge' from the DataFrame
-    current_soc = df['State_of_Charge'][dt.now(pytz.timezone('Europe/Berlin')).hour * 60 + dt.now(pytz.timezone('Europe/Berlin')).minute]
-
-    # Determine marker color based on power value
-    marker_color = 'rgba(0, 102, 0, 0.5)' if power >= 0 else 'rgba(204, 0, 0, 0.5)'
-
-    # Create bar plot
-    bar_fig = go.Figure(go.Bar(x=[category], y=[power], marker_color=marker_color, width=0.5))  # Adjust width of the bar
-
-    # Update bar plot layout
     bar_fig.update_layout(
         title=dict(
-            text="Leistung",
-            x=0.6,  # Set x to 0.5 to center the title
+            text="Ladeleistung",
+            x=0.5,  # Set x to 0.5 to center the title
             font=dict(
                 size=28  # Set the font size
             )
         ),
-        margin=dict(l=20, r=20, t=40, b=20),
+        margin=dict(l=60, r=60, t=60, b=0),
         paper_bgcolor="white",
         height=400,  # Set the height of the bar plot
-        yaxis=dict(range=[-5000, 5000]),  # Set y-axis range
-        yaxis_title="Leistung [kW]"  # Set y-axis title
+        yaxis=dict(range=[0, max(3000, power_cur*1.1)],
+                   tickfont=dict(size=18)),  # Set y-axis range
+        yaxis_title="Leistung [kW]",  # Set y-axis title
+        plot_bgcolor='rgba(51, 51, 51, 0.15)'
     )
+    bar_fig.update_yaxes(title_font=dict(size=16))
 
-    # Update the displayed value for "Aktueller Ladestand"
-    current_soc_text = f"{round(current_soc)} %"
+    current_power_text = f"{round(power_cur)} kW"
 
-    # Update time series plot data
+    return bar_fig, current_power_text
+
+
+# bar plot leistung
+@app.callback(
+    Output('live-update-graph-soc', 'figure'),
+    Output("current-soc", "children"),
+    [Input('interval-component', 'n_intervals')]
+)
+def update_graph_live(n_intervals):
+    CAPACITY = 20000  # kWh
+
+    # read excel
+    df_soc = pd.read_excel("your_file.xlsx")
+    df_soc["State_of_Charge"] = df_soc["State_of_Charge"].interpolate(method="quadratic")
+    df_soc['State_of_Charge'] = df_soc['State_of_Charge'] * 100
+    df_soc.loc[df_soc.State_of_Charge > 100, 'State_of_Charge'] = 100
+    df_soc.loc[df_soc.State_of_Charge < 3, 'State_of_Charge'] = 3
+
     current_minute = dt.now(pytz.timezone('Europe/Berlin')).hour * 60 + dt.now(pytz.timezone('Europe/Berlin')).minute
-    time_data = df['Time'][:current_minute]
-    soc_data = df['State_of_Charge'][:current_minute]
+    time_data = df_soc['Time'][:current_minute]
+    soc_data = df_soc['State_of_Charge'][:current_minute]
 
     # Create figure for time series plot
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=time_data, y=soc_data, fill='tozeroy', mode='none', line=dict(color='rgba(0,100,0,0.5)', width=1), showlegend=False, fillgradient=dict(
+    soc_fig = go.Figure()
+    soc_fig.add_trace(go.Scatter(x=time_data, y=soc_data, fill='tozeroy', mode='none', line=dict(color='rgba(0,100,0,0.5)', width=1), showlegend=False, fillgradient=dict(
         type='vertical',
-        colorscale=['rgba(204, 0, 0, 0.5)', 'rgba(0, 102, 0, 0.5)', 'rgba(0, 102, 0, 0.5)']
+        colorscale=['rgba(0, 0, 212, 0.5)', 'rgba(212, 0, 0, 0.7)',  'rgba(212, 0, 0, 0.7)', 'rgba(212, 0, 0, 0.7)']
     )))
-    fig.update_layout(
+    soc_fig.update_layout(
         title=dict(
             text="Ladestand des Lumenion Wärmespeichers",
             x=0.5,  # Set x to 0.5 to center the title
@@ -348,18 +206,155 @@ def update_power_and_plot(n):
         xaxis=dict(
             title="Uhrzeit",
             tickmode="array",
-            tickvals=np.arange(0, 1441, 60),  # Tick every hour
+            tickvals=np.arange(120, 1441, 120),  # Tick every hour
             ticktext=[str(dt(2022, 1, 1, hour // 60 % 24, hour % 60).strftime('%H:%M')) for hour in
-                      np.arange(0, 1441, 60)],  # Format tick text as HH:MM
-            range=[0, 1440]  # Set x-axis range from start to end of the day
+                      np.arange(120, 1441, 120)],  # Format tick text as HH:MM
+            range=[0, 1440],  # Set x-axis range from start to end of the day
+            tickfont=dict(size=16)
         ),
         yaxis=dict(title="Ladestand (%)",
-                   range=[0, 101],
+                   range=[0, 100],
                    ),
-        margin=dict(l=20, r=20, t=40, b=20),
+        margin=dict(l=60, r=60, t=60, b=50),
+        plot_bgcolor='rgba(51, 51, 51, 0.15)'
     )
+    soc_fig.update_yaxes(title_font=dict(size=16),
+                         tickfont=dict(size=18))
 
-    return f"{power} kW", bar_fig, current_soc_text, fig  # Return current power, bar plot, current SOC, and time series plot
+    current_soc = df_soc.loc[current_minute, 'State_of_Charge']
+    current_soc_text = f"{round(current_soc)} %"
+
+    return soc_fig, current_soc_text
+
+
+# bar plot leistung
+@app.callback(
+    Output('live-update-graph-bar_steam', 'figure'),
+    Output("current-power_steam", "children"),
+    [Input('interval-component2', 'n_intervals')]
+)
+def update_graph_live(n_intervals):
+    power_cur = np.random.randint(35, 38)/10
+
+    # Create a Plotly bar plot
+    bar_fig = go.Figure()
+    bar_fig.add_trace(go.Bar(x=[""], y=[power_cur], marker_color='rgba(212, 0, 0, 0.7)', width=0.5))
+
+    bar_fig.update_layout(
+        title=dict(
+            text="Dampfleistung",
+            x=0.5,  # Set x to 0.5 to center the title
+            font=dict(
+                size=28  # Set the font size
+            )
+        ),
+        margin=dict(l=60, r=60, t=60, b=0),
+        paper_bgcolor="white",
+        height=400,  # Set the height of the bar plot
+        yaxis=dict(range=[0, 5],
+                   tickfont=dict(size=18)),  # Set y-axis range
+        yaxis_title="Leistung [t/h]",  # Set y-axis title
+        plot_bgcolor='rgba(51, 51, 51, 0.15)'
+    )
+    bar_fig.update_yaxes(title_font=dict(size=16))
+
+    current_power_steam_text = f"{round(power_cur,1)} t/h"
+
+    return bar_fig, current_power_steam_text
+
+
+
+# Define different layouts for each URL
+layout_home = html.Div("Home Page Content")
+layout_gestern = html.Div("Gestern Page Content")
+layout_woche = html.Div("Woche Page Content")
+layout_gesamt = html.Div("Gesamt Page Content")
+layout_einstellungen = html.Div("Einstellungen Page Content")
+layout_hilfe = html.Div("Hilfe Page Content")
+
+# Define a callback to update the layout based on the selected URL
+@app.callback(
+    Output("page-content", "children"),
+    [Input("url", "pathname")]
+)
+def display_page_content(pathname):
+    if pathname in ["/", ""]:
+        return [dmc.BackgroundImage(
+        src="assets/background_black_red_wide.png", children=([grid_kpi])), grid_plot]
+    elif pathname == "/Gestern":
+        return [grid_kpi]
+    elif pathname == "/Woche":
+        return [grid_kpi]
+    elif pathname == "/Gesamt":
+        return [grid_kpi]
+    elif pathname == "/Einstellungen":
+        return
+    elif pathname == "/Hilfe":
+        return
+    else:
+        return html.Div("404 Page Not Found")
+
+
+
+# Set app layout
+app.layout = dmc.MantineProvider(
+     forceColorScheme="light",
+     theme={
+         "primaryColor": "indigo",
+         "fontFamily": "'Inter', sans-serif",
+         "components": {
+             "Button": {"defaultProps": {"fw": 400}},
+             "Alert": {"styles": {"title": {"fontWeight": 500}}},
+             "AvatarGroup": {"styles": {"truncated": {"fontWeight": 500}}},
+             "Badge": {"styles": {"root": {"fontWeight": 500}}},
+             "Progress": {"styles": {"label": {"fontWeight": 500}}},
+             "RingProgress": {"styles": {"label": {"fontWeight": 500}}},
+             "CodeHighlightTabs": {"styles": {"file": {"padding": 12}}},
+             "Table": {
+                 "defaultProps": {
+                     "highlightOnHover": True,
+                     "withTableBorder": True,
+                     "verticalSpacing": "sm",
+                     "horizontalSpacing": "md",
+                 }
+             },
+         },
+     },
+     children=[
+         dcc.Location(id='url', refresh=False),
+         sidebar,
+         html.Div(id="page-content"),
+         interval,
+         interval2,
+     ],
+ )
+
+
+# callbacks
+@app.callback(Output("link_heute", "active"),
+              Output("link_gestern", "active"),
+              Output("link_woche", "active"),
+              Output("link_gesamt", "active"),
+              Output("link_einstellungen", "active"),
+              Output("link_hilfe", "active"),
+              [Input("url", "pathname")])
+def render_page_content1(pathname):
+    if (pathname=="/") or (pathname==""):
+        return True, False, False, False, False, False
+    if pathname=="/Gestern":
+        return False, True, False, False, False, False
+    if pathname=="/Woche":
+        return False, False, True, False, False, False
+    if pathname=="/Gesamt":
+        return False, False, False, True, False, False
+    if pathname=="/Einstellungen":
+        return False, False, False, False, True, False
+    if pathname=="/Hilfe":
+        return False, False, False, False, False, True
+    else:
+        return False, False, False, False, False, False
+
+
 
 
 # Run the app

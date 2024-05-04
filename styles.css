@@ -2,3 +2,7 @@
     border-right: 1px solid #ccc;
     height: 100vh; /* Adjust height as needed */
 }
+
+#link_gestern:hover {
+    background-color: red; /* Change to whatever color you desire */
+}
