@@ -9,35 +9,35 @@ import pandas as pd
 
 
 ############## cards ##############
-def get_min_soc_gestern_card():
-    min_soc_gestern_card = dmc.Card(
+def get_min_soc_woche_card():
+    min_soc_woche_card = dmc.Card(
         [
             html.Div("Min. Ladestand", style={"font-size": "18px", "color": "white", "text-align": "center", "margin-bottom": "10px"}),
-            html.Div(id="soc-min", style={"font-size": "32px", "color": "white", "text-align": "center"})
+            html.Div(id="soc-min-woche", style={"font-size": "32px", "color": "white", "text-align": "center"})
         ],
         style={"background-color": "#333", "width": "50%", "border": "1px solid white"}  # Set the background color to grey and add left margin
     )
-    return min_soc_gestern_card
+    return min_soc_woche_card
 
 
-def get_max_soc_gestern_card():
-    max_soc_gestern_card = dmc.Card(
+def get_max_soc_woche_card():
+    max_soc_woche_card = dmc.Card(
         [
             html.Div("Max. Ladestand", style={"font-size": "18px", "color": "white", "text-align": "center", "margin-bottom": "10px"}),
-            html.Div(id="soc-max", style={"font-size": "32px", "color": "white", "text-align": "center"})
+            html.Div(id="soc-max-woche", style={"font-size": "32px", "color": "white", "text-align": "center"})
         ],
         style={"background-color": "#333", "width": "50%", "border": "1px solid white"}  # Set the background color to grey and add left margin
     )
-    return max_soc_gestern_card
+    return max_soc_woche_card
 
 ############## plots ##############
 
 # plot soc
-def get_soc_gestern():
+def get_soc_woche():
     CAPACITY = 20000  # kWh
 
     # read excel
-    df_soc = pd.read_excel("soc_gestern.xlsx")
+    df_soc = pd.read_excel("soc_woche.xlsx")
     df_soc["State_of_Charge"] = df_soc["State_of_Charge"].interpolate(method="quadratic")
     df_soc['State_of_Charge'] = df_soc['State_of_Charge'] * 100
     df_soc.loc[df_soc.State_of_Charge > 100, 'State_of_Charge'] = 100
@@ -54,7 +54,7 @@ def get_soc_gestern():
     )))
     soc_fig.update_layout(
         title=dict(
-            text="Ladestand des Lumenion Wärmespeichers (Gestern)",
+            text="Ladestand des Lumenion Wärmespeichers (Woche)",
             x=0.5,  # Set x to 0.5 to center the title
             font=dict(
                 size=28  # Set the font size to 24
@@ -64,10 +64,10 @@ def get_soc_gestern():
         xaxis=dict(
             title="Uhrzeit",
             tickmode="array",
-            tickvals=np.arange(120, 1441, 120),  # Tick every hour
+            tickvals=np.arange(720, 10081, 720),  # Tick every hour
             ticktext=[str(dt(2022, 1, 1, hour // 60 % 24, hour % 60).strftime('%H:%M')) for hour in
-                      np.arange(120, 1441, 120)],  # Format tick text as HH:MM
-            range=[0, 1440],  # Set x-axis range from start to end of the day
+                      np.arange(720, 10081, 720)],  # Format tick text as HH:MM
+            range=[0, 10080],  # Set x-axis range from start to end of the day
             tickfont=dict(size=16)
         ),
         yaxis=dict(title="Ladestand (%)",
