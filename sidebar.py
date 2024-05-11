@@ -17,6 +17,7 @@ def get_sidebar():
         "padding": "2rem 1rem",
         "background-color": "#333",  # Darker background color
         "color": "#fff",  # White text color
+        'border-right': '1px solid #c2c2c2',
     }
 
 
@@ -43,7 +44,6 @@ def get_sidebar():
                     dmc.NavLink(id="link_heute", label="Heute", href="/"),
                     dmc.NavLink(id="link_gestern", label="Gestern", href="/Gestern"),
                     dmc.NavLink(id="link_woche", label="Letzte Woche", href="/Woche"),
-                    dmc.NavLink(id="link_gesamt", label="Gesamter Zeitraum", href="/Gesamt"),
                 ],
             ),
             html.Hr(style={'background-color': 'white'}),  # Optional: Add a horizontal line for separation

@@ -12,10 +12,11 @@ import pandas as pd
 def get_min_soc_gestern_card():
     min_soc_gestern_card = dmc.Card(
         [
-            html.Div("Min. Ladestand", style={"font-size": "18px", "color": "white", "text-align": "center", "margin-bottom": "10px"}),
-            html.Div(id="soc-min", style={"font-size": "32px", "color": "white", "text-align": "center"})
+            html.Div("Min. Ladestand", style={"font-size": "18px", "color": "333333", "text-align": "center", "margin-bottom": "10px"}),
+            html.Div(id="soc-min", style={"font-size": "32px", "color": "#ffffff", "text-align": "center"})
         ],
-        style={"background-color": "#333", "width": "50%", "border": "1px solid white"}  # Set the background color to grey and add left margin
+        style={"background-color": "#333333", "width": "70%", "border": "2px solid #ffffff"},
+        shadow="1px 1px 5px #b8b6b6",# Set the background color to grey and add left margin
     )
     return min_soc_gestern_card
 
@@ -23,10 +24,11 @@ def get_min_soc_gestern_card():
 def get_max_soc_gestern_card():
     max_soc_gestern_card = dmc.Card(
         [
-            html.Div("Max. Ladestand", style={"font-size": "18px", "color": "white", "text-align": "center", "margin-bottom": "10px"}),
-            html.Div(id="soc-max", style={"font-size": "32px", "color": "white", "text-align": "center"})
+            html.Div("Max. Ladestand", style={"font-size": "18px", "color": "333333", "text-align": "center", "margin-bottom": "10px"}),
+            html.Div(id="soc-max", style={"font-size": "32px", "color": "#ffffff", "text-align": "center"})
         ],
-        style={"background-color": "#333", "width": "50%", "border": "1px solid white"}  # Set the background color to grey and add left margin
+        style={"background-color": "#333333", "width": "70%", "border": "2px solid #ffffff"},
+        shadow="1px 1px 5px #b8b6b6",# Set the background color to grey and add left margin
     )
     return max_soc_gestern_card
 

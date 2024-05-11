@@ -52,18 +52,14 @@ sidebar = get_sidebar()
 
 # grid
 grid_style = {
-    "border": f"1px solid rgba(51, 51, 51, 0.5)",
-    "textAlign": "center",
-    "padding-left": "2rem",
-    "padding-right": "2rem"
-}
-grid_style2 = {
-    "border": f"1px solid rgba(51, 51, 51, 0.5)",
+    "border-top": f"4px solid rgba(51, 51, 51, 0.0)",
+    "border-bottom": f"4px solid rgba(51, 51, 51, 0.0)",
+    "border-right": f"2px solid rgba(51, 51, 51, 0.1)",
+    "border-left": f"2px solid rgba(51, 51, 51, 0.1)",
     "textAlign": "center",
     "padding-left": "2rem",
     "padding-right": "2rem",
-    "padding-top": "2rem",
-    "padding-bottom": "2rem",
+    "padding-top": "0rem",
 }
 
 
@@ -92,7 +88,8 @@ grid_kpi = dmc.Grid(
                                                     "padding-bottom": "2rem",
                                                      }, span=3),
         ],
-        style={"padding": "0rem 0rem 0rem 16rem"}
+        gutter="0px",
+        style={"padding": "0rem 0rem 0rem 16rem", 'backgroundColor': '#333'}
         )
 
 
@@ -102,7 +99,7 @@ grid_plot = dmc.Grid(
             dmc.GridCol(dcc.Graph(id='live-update-graph-soc'), style=grid_style, span=6),
             dmc.GridCol(dcc.Graph(id='live-update-graph-bar_steam'), style=grid_style, span=3),
         ],
-        gutter="xl",
+        gutter="0px",
         style={"padding": "0rem 0rem 0rem 16rem"}
         )
 
@@ -157,7 +154,7 @@ grid_kpi_gestern = dmc.Grid(
                                                     "padding-bottom": "2rem",
                                                      }, span=6),
         ],
-        style={"padding": "0rem 0rem 0rem 16rem"}
+        style={"padding": "0rem 0rem 0rem 16rem", 'backgroundColor': '#333'}
         )
 
 @app.callback(
@@ -174,8 +171,8 @@ grid_plot_gestern = dmc.Grid(
         children=[
             dmc.GridCol(dcc.Graph(id='gestern-graph-soc'), style=grid_style, span=12),
         ],
-        gutter="xl",
-        style={"padding": "0rem 0rem 0rem 16em"}
+        gutter="0px",
+        style={"padding": "0rem 0rem 2rem 16em"}
         )
 
 
@@ -197,7 +194,7 @@ grid_kpi_woche = dmc.Grid(
                                                     "padding-bottom": "2rem",
                                                      }, span=6),
         ],
-        style={"padding": "0rem 0rem 0rem 16rem"}
+        style={"padding": "0rem 0rem 0rem 16rem", 'backgroundColor': '#333'}
         )
 
 @app.callback(
@@ -214,10 +211,70 @@ grid_plot_woche = dmc.Grid(
         children=[
             dmc.GridCol(dcc.Graph(id='woche-graph-soc'), style=grid_style, span=12),
         ],
-        gutter="xl",
-        style={"padding": "0rem 0rem 0rem 16em"}
+        gutter="0px",
+        style={"padding": "0rem 0rem 2rem 16em"}
         )
 
+
+tab_style = {
+    'borderBottom': '1px solid #d6d6d6',
+    'padding': '6px',
+    'backgroundColor': '#333',
+    'fontWeight': 'bold',
+    'borderTop': '1px solid #333',
+    'color': '#ffffff',
+    'margin-bottom': "2rem",
+}
+
+tab_selected_style = {
+    'borderTop': '5px solid #c00000',
+    'borderBottom': '1px solid #ffffff',
+    'backgroundColor': '#ffffff',
+    'color': 'white',
+    'padding': '6px',
+    'fontWeight': 'bold',
+    'color': '#000000',
+    'margin-bottom': "2rem",
+}
+
+
+energiefluss = html.Div([
+        dmc.Grid(
+            children=[
+                dmc.GridCol(dmc.Image(radius="md",src="assets/EE.png", fit='scale-down'), span=2),
+                dmc.GridCol(dmc.Image(src="assets/arrow.png", fit='scale-down', style={"margin-top":"2rem"}), span=1),
+                dmc.GridCol([], span=4),
+                dmc.GridCol([], span=1),
+                dmc.GridCol([], span=3),
+            ],
+            gutter="10px",
+            style={"padding": "0rem 0rem 0rem 16rem", 'backgroundColor': '#333'}
+            ),
+
+        dmc.Grid(
+                children=[
+                    dmc.GridCol(dmc.Image(radius="md",src="assets/BHKW.png", fit='scale-down', style={"margin-top":"7rem"}), span=2),
+                    dmc.GridCol(dmc.Image(src="assets/arrow.png", fit='scale-down', style={"margin-top":"9rem"}), span=1),
+                    dmc.GridCol(dmc.Image(radius="md",src="assets/Speicher.png", fit='scale-down'), span=4),
+                    dmc.GridCol(dmc.Image(src="assets/arrow.png", fit='scale-down', style={"margin-top":"8rem"}), span=1),
+                    dmc.GridCol(dmc.Image(radius="md",src="assets/Westhof.png", fit='scale-down'), span=3),
+                ],
+                gutter="10px",
+                style={"padding": "0rem 0rem 0rem 16rem", 'backgroundColor': '#333'}
+                ),
+
+        dmc.Grid(
+            children=[
+                dmc.GridCol(dmc.Image(radius="md",src="assets/Netz.png", fit='scale-down'), span=2),
+                dmc.GridCol(dmc.Image(src="assets/arrow.png", fit='scale-down', style={"margin-top":"2rem"}), span=1),
+                dmc.GridCol([], span=4),
+                dmc.GridCol([], span=1),
+                dmc.GridCol([], span=3),
+            ],
+            gutter="10px",
+            style={"padding": "0rem 0rem 0rem 16rem", 'backgroundColor': '#333'}
+            ),
+        ], style={"padding-left":"2rem"})
 
 
 # Define a callback to update the layout based on the selected URL
@@ -227,13 +284,23 @@ grid_plot_woche = dmc.Grid(
 )
 def display_page_content(pathname):
     if pathname in ["/", ""]:
-        return [dmc.BackgroundImage(src="assets/background_black_red_wide.png", children=([grid_kpi])), grid_plot]
+        return [dcc.Tabs(
+            [dcc.Tab(label='Lumenion Wärmespeicher', children=[grid_plot, grid_kpi, dmc.BackgroundImage(src="assets/background_black_red_wide.png", children=([html.Div(style={"margin": "0rem", "padding-bottom": "14rem"})]))], style=tab_style, selected_style=tab_selected_style),
+             dcc.Tab(label='Westhof Energiesystem', children=[energiefluss], style=tab_style, selected_style=tab_selected_style)
+             ]
+            )]
     elif pathname == "/Gestern":
-        return [dmc.BackgroundImage(src="assets/background_black_red_wide.png", children=([grid_kpi_gestern])), grid_plot_gestern]
+        return [dcc.Tabs(
+            [dcc.Tab(label='Lumenion Wärmespeicher', children=[grid_plot_gestern, grid_kpi_gestern, dmc.BackgroundImage(src="assets/background_black_red_wide.png", children=([html.Div(style={"margin": "0rem", "padding-bottom": "16rem"})]))], style=tab_style, selected_style=tab_selected_style),
+             dcc.Tab(label='Westhof Energiesystem', children=[], style=tab_style, selected_style=tab_selected_style)
+             ]
+            )]
     elif pathname == "/Woche":
-        return [dmc.BackgroundImage(src="assets/background_black_red_wide.png", children=([grid_kpi_woche])), grid_plot_woche]
-    elif pathname == "/Gesamt":
-        return [grid_kpi]
+        return [dcc.Tabs(
+            [dcc.Tab(label='Lumenion Wärmespeicher', children=[grid_plot_woche, grid_kpi_woche, dmc.BackgroundImage(src="assets/background_black_red_wide.png", children=([html.Div(style={"margin": "0rem", "padding-bottom": "16rem"})]))], style=tab_style, selected_style=tab_selected_style),
+             dcc.Tab(label='Westhof Energiesystem', children=[], style=tab_style, selected_style=tab_selected_style)
+             ]
+            )]
     elif pathname == "/Einstellungen":
         return
     elif pathname == "/Hilfe":
@@ -281,25 +348,22 @@ app.layout = dmc.MantineProvider(
 @app.callback(Output("link_heute", "active"),
               Output("link_gestern", "active"),
               Output("link_woche", "active"),
-              Output("link_gesamt", "active"),
               Output("link_einstellungen", "active"),
               Output("link_hilfe", "active"),
               [Input("url", "pathname")])
 def render_page_content1(pathname):
     if (pathname=="/") or (pathname==""):
-        return True, False, False, False, False, False
+        return True, False, False, False, False
     if pathname=="/Gestern":
-        return False, True, False, False, False, False
+        return False, True, False, False, False
     if pathname=="/Woche":
-        return False, False, True, False, False, False
-    if pathname=="/Gesamt":
-        return False, False, False, True, False, False
+        return False, False, True, False, False
     if pathname=="/Einstellungen":
-        return False, False, False, False, True, False
+        return False, False, False, True, False
     if pathname=="/Hilfe":
-        return False, False, False, False, False, True
+        return False, False, False, False, True
     else:
-        return False, False, False, False, False, False
+        return False, False, False, False, False
 
 
 

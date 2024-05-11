@@ -13,9 +13,10 @@ def get_current_power_card():
     current_power_card = dmc.Card(
         [
             #html.Div("Ladeleistung", style={"font-size": "18px", "color": "white", "text-align": "center", "margin-bottom": "10px"}),
-            html.Div(id="current-power", style={"font-size": "32px", "color": "white", "text-align": "center"})
+            html.Div(id="current-power", style={"font-size": "32px", "color": "#ffffff", "text-align": "center"})
         ],
-        style={"background-color": "#333", "width": "70%", "border": "1px solid white"}  # Set the background color to grey and add left margin
+        style={"background-color": "#333333", "width": "70%", "border": "2px solid #ffffff"},
+        shadow="1px 1px 5px #b8b6b6",# Set the background color to grey and add left margin
     )
     return current_power_card
 
@@ -24,9 +25,10 @@ def get_current_soc_card():
     current_soc_card = dmc.Card(
         [
             # html.Div("Ladestand", style={"font-size": "18px", "color": "white", "text-align": "center", "margin-bottom": "10px"}),
-            html.Div(id="current-soc", style={"font-size": "32px", "color": "white", "text-align": "center"})
+            html.Div(id="current-soc", style={"font-size": "32px", "color": "#ffffff", "text-align": "center"})
         ],
-        style={"background-color": "#333", "width": "50%", "border": "1px solid white"}  # Set the background color to grey and add left margin
+        style={"background-color": "#333333", "width": "70%", "border": "2px solid #ffffff"},
+        shadow="1px 1px 5px #b8b6b6",# Set the background color to grey and add left margin
     )
     return current_soc_card
 
@@ -35,9 +37,10 @@ def get_current_power_steam_card():
     current_power_steam_card = dmc.Card(
         [
             # html.Div("Dampfleistung", style={"font-size": "18px", "color": "white", "text-align": "center", "margin-bottom": "10px"}),
-            html.Div(id="current-power_steam", style={"font-size": "32px", "color": "white", "text-align": "center"})
+            html.Div(id="current-power_steam", style={"font-size": "32px", "color": "#ffffff", "text-align": "center"})
         ],
-        style={"background-color": "#333", "width": "70%", "border": "1px solid white"}  # Set the background color to grey and add left margin
+        style={"background-color": "#333333", "width": "70%", "border": "2px solid #ffffff"},
+        shadow="1px 1px 5px #b8b6b6",# Set the background color to grey and add left margin
     )
     return current_power_steam_card
 
@@ -77,7 +80,7 @@ def update_power_heute(n_intervals):
         ),
         margin=dict(l=60, r=60, t=60, b=0),
         paper_bgcolor="white",
-        height=400,  # Set the height of the bar plot
+        height=500,  # Set the height of the bar plot
         yaxis=dict(range=[0, max(3000, power_cur*1.1)],
                    tickfont=dict(size=18)),  # Set y-axis range
         yaxis_title="Leistung [kW]",  # Set y-axis title
@@ -120,6 +123,7 @@ def update_soc_heute(n_intervals):
             )
         ),
         paper_bgcolor="white",
+        height=545,
         xaxis=dict(
             title="Uhrzeit",
             tickmode="array",
@@ -162,7 +166,7 @@ def update_steam_power_heute(n_intervals):
         ),
         margin=dict(l=60, r=60, t=60, b=0),
         paper_bgcolor="white",
-        height=400,  # Set the height of the bar plot
+        height=500,  # Set the height of the bar plot
         yaxis=dict(range=[0, 5],
                    tickfont=dict(size=18)),  # Set y-axis range
         yaxis_title="Leistung [t/h]",  # Set y-axis title
