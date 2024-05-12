@@ -13,6 +13,8 @@ from sidebar import get_sidebar
 from heute import *
 from gestern import *
 from woche import *
+from energiefluss_heute import *
+
 
 
 stylesheets = [
@@ -72,20 +74,20 @@ current_power_steam_card = get_current_power_steam_card()
 
 grid_kpi = dmc.Grid(
         children=[
-            dmc.GridCol(current_power_card, style={   "padding-left": "8rem",
+            dmc.GridCol(current_power_card, style={   "padding-left": "0rem",
                                                     "padding-right": "0rem",
                                                     "padding-top": "2rem",
-                                                    "padding-bottom": "2rem",
+                                                    "padding-bottom": "2rem", "display": "flex", "align-items": "center", "justify-content": "center",
                                                      }, span=3),
-            dmc.GridCol(current_soc_card, style={   "padding-left": "16rem",
+            dmc.GridCol(current_soc_card, style={   "padding-left": "0rem",
                                                     "padding-right": "0rem",
                                                     "padding-top": "2rem",
-                                                    "padding-bottom": "2rem",
+                                                    "padding-bottom": "2rem", "display": "flex", "align-items": "center", "justify-content": "center",
                                                      }, span=6),
-            dmc.GridCol(current_power_steam_card, style={   "padding-left": "8rem",
+            dmc.GridCol(current_power_steam_card, style={   "padding-left": "0rem",
                                                     "padding-right": "0rem",
                                                     "padding-top": "2rem",
-                                                    "padding-bottom": "2rem",
+                                                    "padding-bottom": "2rem", "display": "flex", "align-items": "center", "justify-content": "center",
                                                      }, span=3),
         ],
         gutter="0px",
@@ -143,17 +145,18 @@ max_soc_gestern_card = get_max_soc_gestern_card()
 
 grid_kpi_gestern = dmc.Grid(
         children=[
-            dmc.GridCol(min_soc_gestern_card, style={   "padding-left": "16rem",
+            dmc.GridCol(min_soc_gestern_card, style={   "padding-left": "0rem",
                                                     "padding-right": "0rem",
                                                     "padding-top": "2rem",
-                                                    "padding-bottom": "2rem",
+                                                    "padding-bottom": "2rem", "display": "flex", "align-items": "center", "justify-content": "center",
                                                      }, span=6),
-            dmc.GridCol(max_soc_gestern_card, style={   "padding-left": "16rem",
+            dmc.GridCol(max_soc_gestern_card, style={   "padding-left": "0rem",
                                                     "padding-right": "0rem",
                                                     "padding-top": "2rem",
-                                                    "padding-bottom": "2rem",
+                                                    "padding-bottom": "2rem", "display": "flex", "align-items": "center", "justify-content": "center",
                                                      }, span=6),
         ],
+        gutter="0px",
         style={"padding": "0rem 0rem 0rem 16rem", 'backgroundColor': '#333'}
         )
 
@@ -183,17 +186,18 @@ max_soc_woche_card = get_max_soc_woche_card()
 
 grid_kpi_woche = dmc.Grid(
         children=[
-            dmc.GridCol(min_soc_woche_card, style={   "padding-left": "16rem",
+            dmc.GridCol(min_soc_woche_card, style={   "padding-left": "0rem",
                                                     "padding-right": "0rem",
                                                     "padding-top": "2rem",
-                                                    "padding-bottom": "2rem",
+                                                    "padding-bottom": "2rem", "display": "flex", "align-items": "center", "justify-content": "center",
                                                      }, span=6),
-            dmc.GridCol(max_soc_woche_card, style={   "padding-left": "16rem",
+            dmc.GridCol(max_soc_woche_card, style={   "padding-left": "0rem",
                                                     "padding-right": "0rem",
                                                     "padding-top": "2rem",
-                                                    "padding-bottom": "2rem",
+                                                    "padding-bottom": "2rem", "display": "flex", "align-items": "center", "justify-content": "center",
                                                      }, span=6),
         ],
+        gutter="0px",
         style={"padding": "0rem 0rem 0rem 16rem", 'backgroundColor': '#333'}
         )
 
@@ -238,43 +242,57 @@ tab_selected_style = {
 }
 
 
-energiefluss = html.Div([
-        dmc.Grid(
-            children=[
-                dmc.GridCol(dmc.Image(radius="md",src="assets/EE.png", fit='scale-down'), span=2),
-                dmc.GridCol(dmc.Image(src="assets/arrow.png", fit='scale-down', style={"margin-top":"2rem"}), span=1),
-                dmc.GridCol([], span=4),
-                dmc.GridCol([], span=1),
-                dmc.GridCol([], span=3),
-            ],
-            gutter="10px",
-            style={"padding": "0rem 0rem 0rem 16rem", 'backgroundColor': '#333'}
-            ),
+EE_card = get_EE_card()
+lebensmittel_card = get_lebensmittel_card()
 
-        dmc.Grid(
-                children=[
-                    dmc.GridCol(dmc.Image(radius="md",src="assets/BHKW.png", fit='scale-down', style={"margin-top":"7rem"}), span=2),
-                    dmc.GridCol(dmc.Image(src="assets/arrow.png", fit='scale-down', style={"margin-top":"9rem"}), span=1),
-                    dmc.GridCol(dmc.Image(radius="md",src="assets/Speicher.png", fit='scale-down'), span=4),
-                    dmc.GridCol(dmc.Image(src="assets/arrow.png", fit='scale-down', style={"margin-top":"8rem"}), span=1),
-                    dmc.GridCol(dmc.Image(radius="md",src="assets/Westhof.png", fit='scale-down'), span=3),
-                ],
-                gutter="10px",
-                style={"padding": "0rem 0rem 0rem 16rem", 'backgroundColor': '#333'}
-                ),
+grid_kpi_energiefluss_heute = dmc.Grid(
+        children=[
+            dmc.GridCol(EE_card, style={   "padding-left": "0rem",
+                                                    "padding-right": "0rem",
+                                                    "padding-top": "2rem",
+                                                    "padding-bottom": "2rem", "display": "flex", "align-items": "center", "justify-content": "center",
+                                                     }, span=6),
+            dmc.GridCol(lebensmittel_card, style={   "padding-left": "0rem",
+                                                    "padding-right": "0rem",
+                                                    "padding-top": "2rem",
+                                                    "padding-bottom": "2rem", "display": "flex", "align-items": "center", "justify-content": "center",
+                                                     }, span=6),
+        ],
+        gutter="0px",
+        style={"padding": "0rem 0rem 0rem 16rem", 'backgroundColor': '#333', "margin-top": "2rem"}
+        )
 
-        dmc.Grid(
+energiefluss = html.Div(
+    [dmc.Grid(
             children=[
-                dmc.GridCol(dmc.Image(radius="md",src="assets/Netz.png", fit='scale-down'), span=2),
-                dmc.GridCol(dmc.Image(src="assets/arrow.png", fit='scale-down', style={"margin-top":"2rem"}), span=1),
-                dmc.GridCol([], span=4),
-                dmc.GridCol([], span=1),
-                dmc.GridCol([], span=3),
+                dmc.GridCol([
+                    dmc.Image(radius="0px",src="assets/EE.png", fit='scale-down', style={"padding-left": "1rem", "padding-top": "0rem"}),
+                    dmc.Image(radius="0px",src="assets/BHKW.png", fit='scale-down', style={"padding-left": "1rem", "padding-top": "1rem"}),
+                    dmc.Image(radius="0px",src="assets/Netz.png", fit='scale-down', style={"padding-left": "1rem", "padding-top": "1rem"})],
+                    span=2),
+                dmc.GridCol([
+                    dmc.Image(src="assets/arrow_EE.png", fit='scale-down', style={"margin-top":"2rem", "padding-left": "1rem"}),
+                    dmc.Image(src="assets/arrow_BHKW.png", fit='scale-down', style={"margin-top":"6rem", "padding-left": "1rem"}),
+                    dmc.Image(src="assets/arrow_Netz.png", fit='scale-down', style={"margin-top":"5rem", "padding-left": "1rem"})],
+                    span=1),
+                dmc.GridCol([
+                    #dmc.Image(radius="md",src="assets/arrow_long.png", fit='scale-down', style={"padding-left": "1rem", "padding-top": "4rem"}),
+                    dmc.Image(radius="0px",src="assets/Speicher.png", fit='scale-down', style={"padding-left": "1rem", "padding-top": "8rem"})],
+                    span=4),
+                dmc.GridCol([
+                    dmc.Image(src="assets/arrow_Strom.png", fit='scale-down', style={"margin-top": "10rem", "padding-left": "1rem"}),
+                    dmc.Image(src="assets/arrow_Wärme.png", fit='scale-down', style={"margin-top": "2rem", "padding-left": "1rem"})],
+                    span=1),
+                dmc.GridCol([
+                    dmc.Image(radius="0px", src="assets/Westhof.png", fit='scale-down', style={"padding-left": "1rem", "padding-right": "1rem", "padding-top": "4rem"})],
+                    span=4),
             ],
-            gutter="10px",
-            style={"padding": "0rem 0rem 0rem 16rem", 'backgroundColor': '#333'}
+            gutter="0px",
+            style={"padding": "0rem 0rem 0rem 16rem", 'backgroundColor': '#ffffff'}
             ),
-        ], style={"padding-left":"2rem"})
+        grid_kpi_energiefluss_heute
+        ])
+
 
 
 # Define a callback to update the layout based on the selected URL
@@ -285,21 +303,21 @@ energiefluss = html.Div([
 def display_page_content(pathname):
     if pathname in ["/", ""]:
         return [dcc.Tabs(
-            [dcc.Tab(label='Lumenion Wärmespeicher', children=[grid_plot, grid_kpi, dmc.BackgroundImage(src="assets/background_black_red_wide.png", children=([html.Div(style={"margin": "0rem", "padding-bottom": "14rem"})]))], style=tab_style, selected_style=tab_selected_style),
-             dcc.Tab(label='Westhof Energiesystem', children=[energiefluss], style=tab_style, selected_style=tab_selected_style)
-             ]
+            [dcc.Tab(label='Lumenion Wärmespeicher', children=[grid_plot, grid_kpi, html.Div(style={"margin": "0rem", "padding-bottom": "14rem", "background": "linear-gradient(#333333, #47100a)"})], style=tab_style, selected_style=tab_selected_style),
+             dcc.Tab(label='Westhof Energiesystem', children=[energiefluss, html.Div(style={"margin": "0rem", "padding-bottom": "8rem", "background": "linear-gradient(#333333, #47100a)"})], style=tab_style, selected_style=tab_selected_style)
+             ], style={"padding-left": "12rem"}
             )]
     elif pathname == "/Gestern":
         return [dcc.Tabs(
-            [dcc.Tab(label='Lumenion Wärmespeicher', children=[grid_plot_gestern, grid_kpi_gestern, dmc.BackgroundImage(src="assets/background_black_red_wide.png", children=([html.Div(style={"margin": "0rem", "padding-bottom": "16rem"})]))], style=tab_style, selected_style=tab_selected_style),
+            [dcc.Tab(label='Lumenion Wärmespeicher', children=[grid_plot_gestern, grid_kpi_gestern, html.Div(style={"margin": "0rem", "padding-bottom": "14rem", "background": "linear-gradient(#333333, #47100a)"})], style=tab_style, selected_style=tab_selected_style),
              dcc.Tab(label='Westhof Energiesystem', children=[], style=tab_style, selected_style=tab_selected_style)
-             ]
+             ],style={"padding-left": "12rem"}
             )]
     elif pathname == "/Woche":
         return [dcc.Tabs(
-            [dcc.Tab(label='Lumenion Wärmespeicher', children=[grid_plot_woche, grid_kpi_woche, dmc.BackgroundImage(src="assets/background_black_red_wide.png", children=([html.Div(style={"margin": "0rem", "padding-bottom": "16rem"})]))], style=tab_style, selected_style=tab_selected_style),
+            [dcc.Tab(label='Lumenion Wärmespeicher', children=[grid_plot_woche, grid_kpi_woche, html.Div(style={"margin": "0rem", "padding-bottom": "14rem", "background": "linear-gradient(#333333, #47100a)"})], style=tab_style, selected_style=tab_selected_style),
              dcc.Tab(label='Westhof Energiesystem', children=[], style=tab_style, selected_style=tab_selected_style)
-             ]
+             ], style={"padding-left": "12rem"}
             )]
     elif pathname == "/Einstellungen":
         return

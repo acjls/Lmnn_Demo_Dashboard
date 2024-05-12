@@ -12,7 +12,7 @@ import pandas as pd
 def get_min_soc_woche_card():
     min_soc_woche_card = dmc.Card(
         [
-            html.Div("Min. Ladestand", style={"font-size": "18px", "color": "333333", "text-align": "center", "margin-bottom": "10px"}),
+            html.Div("Min. Ladestand", style={"font-size": "18px", "color": "#ffffff", "text-align": "center", "margin-bottom": "10px"}),
             html.Div(id="soc-min-woche", style={"font-size": "32px", "color": "#ffffff", "text-align": "center"})
         ],
         style={"background-color": "#333333", "width": "70%", "border": "2px solid #ffffff"},
@@ -24,7 +24,7 @@ def get_min_soc_woche_card():
 def get_max_soc_woche_card():
     max_soc_woche_card = dmc.Card(
         [
-            html.Div("Max. Ladestand", style={"font-size": "18px", "color": "333333", "text-align": "center", "margin-bottom": "10px"}),
+            html.Div("Max. Ladestand", style={"font-size": "18px", "color": "#ffffff", "text-align": "center", "margin-bottom": "10px"}),
             html.Div(id="soc-max-woche", style={"font-size": "32px", "color": "#ffffff", "text-align": "center"})
         ],
         style={"background-color": "#333333", "width": "70%", "border": "2px solid #ffffff"},

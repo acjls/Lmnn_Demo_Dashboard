@@ -80,7 +80,7 @@ def update_power_heute(n_intervals):
         ),
         margin=dict(l=60, r=60, t=60, b=0),
         paper_bgcolor="white",
-        height=500,  # Set the height of the bar plot
+        height=550,  # Set the height of the bar plot
         yaxis=dict(range=[0, max(3000, power_cur*1.1)],
                    tickfont=dict(size=18)),  # Set y-axis range
         yaxis_title="Leistung [kW]",  # Set y-axis title
@@ -123,7 +123,7 @@ def update_soc_heute(n_intervals):
             )
         ),
         paper_bgcolor="white",
-        height=545,
+        height=595,
         xaxis=dict(
             title="Uhrzeit",
             tickmode="array",
@@ -166,7 +166,7 @@ def update_steam_power_heute(n_intervals):
         ),
         margin=dict(l=60, r=60, t=60, b=0),
         paper_bgcolor="white",
-        height=500,  # Set the height of the bar plot
+        height=550,  # Set the height of the bar plot
         yaxis=dict(range=[0, 5],
                    tickfont=dict(size=18)),  # Set y-axis range
         yaxis_title="Leistung [t/h]",  # Set y-axis title
