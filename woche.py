@@ -52,7 +52,7 @@ def get_soc_woche():
     soc_fig = go.Figure()
     soc_fig.add_trace(go.Scatter(x=time_data, y=soc_data, fill='tozeroy', mode='none', line=dict(color='rgba(0,100,0,0.5)', width=1), showlegend=False, fillgradient=dict(
         type='vertical',
-        colorscale=['rgba(0, 0, 212, 0.5)', 'rgba(212, 0, 0, 0.7)',  'rgba(212, 0, 0, 0.7)', 'rgba(212, 0, 0, 0.7)']
+        colorscale=['rgba(0, 0, 192, 1)', 'rgba(192, 0, 0, 1)',  'rgba(192, 0, 0, 1)', 'rgba(192, 0, 0, 1)']
     )))
     soc_fig.update_layout(
         title=dict(
@@ -74,12 +74,15 @@ def get_soc_woche():
         ),
         yaxis=dict(title="Ladestand (%)",
                    range=[0, 100],
+                   gridcolor='rgba(51, 51, 51, 0.25)',  # Set y-axis range
                    ),
         margin=dict(l=60, r=60, t=60, b=50),
-        plot_bgcolor='rgba(51, 51, 51, 0.15)'
+        plot_bgcolor='rgba(0, 0, 0, 0)'
     )
     soc_fig.update_yaxes(title_font=dict(size=16),
                          tickfont=dict(size=18))
+    soc_fig.update_xaxes(showline=True, linewidth=3, linecolor='rgba(51, 51, 51, 0.15)')
+
 
     #
     min_soc = df_soc['State_of_Charge'].min()

@@ -68,7 +68,7 @@ def update_power_heute(n_intervals):
 
     # Create a Plotly bar plot
     bar_fig = go.Figure()
-    bar_fig.add_trace(go.Bar(x=[""], y=[power_cur], marker_color='rgba(212, 0, 0, 0.7)', width=0.5))
+    bar_fig.add_trace(go.Bar(x=[""], y=[power_cur], marker_color='rgba(192, 0, 0, 1)', width=0.5))
 
     bar_fig.update_layout(
         title=dict(
@@ -82,11 +82,13 @@ def update_power_heute(n_intervals):
         paper_bgcolor="white",
         height=550,  # Set the height of the bar plot
         yaxis=dict(range=[0, max(3000, power_cur*1.1)],
-                   tickfont=dict(size=18)),  # Set y-axis range
+                   tickfont=dict(size=18),
+                   gridcolor='rgba(51, 51, 51, 0.25)'),  # Set y-axis range
         yaxis_title="Leistung [kW]",  # Set y-axis title
-        plot_bgcolor='rgba(51, 51, 51, 0.15)'
+        plot_bgcolor='rgba(0, 0, 0, 0)'
     )
     bar_fig.update_yaxes(title_font=dict(size=16))
+    bar_fig.update_xaxes(showline=True, linewidth=3, linecolor='rgba(51, 51, 51, 0.15)')
 
     current_power_text = f"{round(power_cur)} kW"
 
@@ -112,7 +114,7 @@ def update_soc_heute(n_intervals):
     soc_fig = go.Figure()
     soc_fig.add_trace(go.Scatter(x=time_data, y=soc_data, fill='tozeroy', mode='none', line=dict(color='rgba(0,100,0,0.5)', width=1), showlegend=False, fillgradient=dict(
         type='vertical',
-        colorscale=['rgba(0, 0, 212, 0.5)', 'rgba(212, 0, 0, 0.7)',  'rgba(212, 0, 0, 0.7)', 'rgba(212, 0, 0, 0.7)']
+        colorscale=['rgba(0, 0, 192, 1)', 'rgba(192, 0, 0, 1)',  'rgba(192, 0, 0, 1)', 'rgba(192, 0, 0, 1)']
     )))
     soc_fig.update_layout(
         title=dict(
@@ -135,12 +137,14 @@ def update_soc_heute(n_intervals):
         ),
         yaxis=dict(title="Ladestand (%)",
                    range=[0, 100],
+                   gridcolor='rgba(51, 51, 51, 0.25)',  # Set y-axis range
                    ),
         margin=dict(l=60, r=60, t=60, b=50),
-        plot_bgcolor='rgba(51, 51, 51, 0.15)'
+        plot_bgcolor='rgba(0, 0, 0, 0)'
     )
     soc_fig.update_yaxes(title_font=dict(size=16),
                          tickfont=dict(size=18))
+    soc_fig.update_xaxes(showline=True, linewidth=3, linecolor='rgba(51, 51, 51, 0.15)')
 
     current_soc = df_soc.loc[current_minute, 'State_of_Charge']
     current_soc_text = f"{round(current_soc)} %"
@@ -153,8 +157,8 @@ def update_steam_power_heute(n_intervals):
     power_cur = np.random.randint(35, 38)/10
 
     # Create a Plotly bar plot
-    bar_fig = go.Figure()
-    bar_fig.add_trace(go.Bar(x=[""], y=[power_cur], marker_color='rgba(212, 0, 0, 0.7)', width=0.5))
+    a = go.Bar(x=[""], y=[power_cur], marker_color='rgba(192, 0, 0, 1)', width=0.5)
+    bar_fig = go.Figure(a)
 
     bar_fig.update_layout(
         title=dict(
@@ -168,12 +172,33 @@ def update_steam_power_heute(n_intervals):
         paper_bgcolor="white",
         height=550,  # Set the height of the bar plot
         yaxis=dict(range=[0, 5],
-                   tickfont=dict(size=18)),  # Set y-axis range
+                   tickfont=dict(size=18),
+                   gridcolor='rgba(51, 51, 51, 0.25)'),  # Set y-axis range
         yaxis_title="Leistung [t/h]",  # Set y-axis title
-        plot_bgcolor='rgba(51, 51, 51, 0.15)'
+        plot_bgcolor='rgba(0, 0, 0, 0)'
     )
     bar_fig.update_yaxes(title_font=dict(size=16))
+    bar_fig.update_xaxes(showline=True, linewidth=3, linecolor='rgba(51, 51, 51, 0.15)')
 
     current_power_steam_text = f"{round(power_cur,1)} t/h"
 
     return bar_fig, current_power_steam_text
+
+
+def random_energiefluss_values(n_intervals):
+    power_ee = np.random.randint(500, 700)
+    power_bhkw = np.random.randint(8000, 9000)
+    power_netz = np.random.randint(-200, 300)
+
+    power_input_total = power_ee + power_bhkw + power_netz
+
+    power_strom = int(power_input_total * 0.6)
+    power_waerme = int(power_input_total * 0.4 * 0.95)
+
+    power_ee_str = str(power_ee) + " kW"
+    power_bhkw_str = str(power_bhkw) + " kW"
+    power_netz_str = str(power_netz) + " kW"
+    power_strom_str = str(power_strom) + " kW"
+    power_waerme_str = str(power_waerme) + " kW"
+
+    return power_ee_str, power_bhkw_str, power_netz_str, power_strom_str, power_waerme_str

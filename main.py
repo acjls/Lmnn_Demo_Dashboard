@@ -1,5 +1,6 @@
 import dash
 from dash import Dash, dcc, html, Input, Output, callback
+import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 
 from datetime import datetime as dt
@@ -24,7 +25,8 @@ stylesheets = [
     "https://unpkg.com/@mantine/carousel@7/styles.css",
     "https://unpkg.com/@mantine/notifications@7/styles.css",
     "https://unpkg.com/@mantine/nprogress@7/styles.css",
-    "styles.css"
+    "styles.css",
+    dbc.themes.BOOTSTRAP
 ]
 
 # Initialize Dash app
@@ -44,6 +46,11 @@ interval = dcc.Interval(
 interval2 = dcc.Interval(
         id='interval-component2',
         interval=10000,  # in milliseconds
+        n_intervals=0
+    )
+interval3 = dcc.Interval(
+        id='interval-component3',
+        interval=4000,  # in milliseconds
         n_intervals=0
     )
 
@@ -242,6 +249,19 @@ tab_selected_style = {
 }
 
 
+@app.callback(
+    Output("ee_power", "children"),
+    Output("bhkw_power", "children"),
+    Output("netz_power", "children"),
+    Output("strom_power", "children"),
+    Output("waerme_power", "children"),
+    [Input('interval-component3', 'n_intervals')]
+)
+def get_random_energiefluss_values(n_intervals):
+    value_ee, value_bhkw, value_netz, value_strom, value_waerme = random_energiefluss_values(n_intervals)
+    return value_ee, value_bhkw, value_netz, value_strom, value_waerme
+
+
 EE_card = get_EE_card()
 lebensmittel_card = get_lebensmittel_card()
 
@@ -259,7 +279,7 @@ grid_kpi_energiefluss_heute = dmc.Grid(
                                                      }, span=6),
         ],
         gutter="0px",
-        style={"padding": "0rem 0rem 0rem 16rem", 'backgroundColor': '#333', "margin-top": "2rem"}
+        style={"padding": "0rem 2rem 0rem 2rem", 'backgroundColor': '#333', "margin-top": "2rem"}
         )
 
 energiefluss = html.Div(
@@ -271,9 +291,10 @@ energiefluss = html.Div(
                     dmc.Image(radius="0px",src="assets/Netz.png", fit='scale-down', style={"padding-left": "1rem", "padding-top": "1rem"})],
                     span=2),
                 dmc.GridCol([
-                    dmc.Image(src="assets/arrow_EE.png", fit='scale-down', style={"margin-top":"2rem", "padding-left": "1rem"}),
-                    dmc.Image(src="assets/arrow_BHKW.png", fit='scale-down', style={"margin-top":"6rem", "padding-left": "1rem"}),
-                    dmc.Image(src="assets/arrow_Netz.png", fit='scale-down', style={"margin-top":"5rem", "padding-left": "1rem"})],
+                    #html.Div(text="test", style={"margin-top":"1rem", "padding-left": "1rem"}),
+                    dmc.Image(src="assets/Pfeil_blau.png", fit='scale-down', style={"margin-top":"2rem", "padding-left": "1rem"}),
+                    dmc.Image(src="assets/Pfeil_blau.png", fit='scale-down', style={"margin-top":"6rem", "padding-left": "1rem"}),
+                    dmc.Image(src="assets/Pfeil_blau_schwarz.png", fit='scale-down', style={"margin-top":"5rem", "padding-left": "1rem"})],
                     span=1),
                 dmc.GridCol([
                     #dmc.Image(radius="md",src="assets/arrow_long.png", fit='scale-down', style={"padding-left": "1rem", "padding-top": "4rem"}),
@@ -294,6 +315,63 @@ energiefluss = html.Div(
         ])
 
 
+energiefluss = html.Div([
+    dbc.Row([
+        dbc.Col([
+            dbc.Row([
+                dbc.Col(html.Img(src="/assets/EE.png", style={"padding-left": "1rem", "padding-top": "0rem", "width": "100%", "height": "auto"}), width=8),
+                dbc.Col([
+                    html.Div(id="ee_power", style={"text-align": "center", "width": "100%", "font-weight": "bold", "font-size": "20px"}),
+                    html.Img(src="/assets/Pfeil_blau.png", style={"width": "100%", "height": "auto"})
+                ], className="d-flex flex-column justify-content-center align-items-center", width=4),
+            ]),
+            dbc.Row([
+                dbc.Col(html.Img(src="/assets/BHKW.png", style={"padding-left": "1rem", "padding-top": "1rem", "width": "100%", "height": "auto"}), width=8),
+                dbc.Col([
+                    html.Div(id="bhkw_power", style={"text-align": "center", "width": "100%", "font-weight": "bold", "font-size": "20px"}),
+                    html.Img(src="/assets/Pfeil_blau.png", style={"width": "100%", "height": "auto"})
+                ], className="d-flex flex-column justify-content-center align-items-center", width=4),
+            ]),
+            dbc.Row([
+                dbc.Col(html.Img(src="/assets/Netz.png", style={"padding-left": "1rem", "padding-top": "1rem", "width": "100%", "height": "auto"}), width=8),
+                dbc.Col([
+                    html.Div(id="netz_power", style={"text-align": "center", "width": "100%", "font-weight": "bold", "font-size": "20px"}),
+                    html.Img(src="/assets/Pfeil_blau_schwarz.png", style={"width": "100%", "height": "auto"})
+                ], className="d-flex flex-column justify-content-center align-items-center", width=4),
+            ]),
+        ], width=3),
+        dbc.Col([
+            html.Div(style={"width": "50px", "height": "100%", "backgroundColor": "rgba(0, 112, 192, 1)", "margin-left": "1rem"})  # Small width div added here
+        ], className="d-flex flex-column justify-content-center align-items-center", width=0.5),
+        dbc.Col([  # Strom/Speicher
+            dbc.Col([  # Strom/Speicher
+                dbc.Col([
+                    html.Div(id="strom_power", style={"text-align": "center", "width": "100%", "font-weight": "bold", "font-size": "20px"}),
+                    html.Img(src="/assets/Pfeil_blau_lang.png", style={"width": "100%", "height": "auto"}),
+                ], style={ "padding-top": "3rem"}, width=12),
+            ]),
+            dbc.Row([
+                dbc.Col([
+                    html.Div(" ", style={"text-align": "center", "width": "100%", "padding-left": "2rem", "font-weight": "bold", "font-size": "20px"}),
+                    html.Img(src="/assets/Pfeil_blau_kurz.png", style={"width": "100%", "height": "auto", "padding-left": "2rem"})
+                ], className="d-flex flex-column justify-content-center align-items-center", width=2),
+                dbc.Col(html.Img(src="/assets/Speicher.png", style={"padding-left": "0rem", "padding-top": "0rem", "width": "100%", "height": "auto"}), width=7),
+                dbc.Col([
+                    html.Div(id="waerme_power", style={"text-align": "center", "width": "100%", "padding-right": "3rem", "font-weight": "bold", "font-size": "20px"}),
+                    html.Img(src="/assets/Pfeil_rot.png", style={"width": "100%", "height": "auto", "padding-right": "2rem"}),
+                ], className="d-flex flex-column justify-content-center align-items-center", width=3),
+            ]),
+        ], className="d-flex flex-column justify-content-center align-items-center", style={"padding-bottom": "3rem"}, width=5),
+        dbc.Col([
+            html.Img(src="/assets/Westhof_schmal.png", style={"width": "auto", "height": "100%", "padding-right": "1rem", "padding-left": "0rem"})
+        ], width=3),  # Set the width to 3 columns to match the height of the first column
+    ], no_gutters=True),
+    grid_kpi_energiefluss_heute
+],
+    style={"padding": "0rem 0rem 0rem 16rem", 'backgroundColor': '#ffffff'},
+)
+
+
 
 # Define a callback to update the layout based on the selected URL
 @app.callback(
@@ -304,7 +382,7 @@ def display_page_content(pathname):
     if pathname in ["/", ""]:
         return [dcc.Tabs(
             [dcc.Tab(label='Lumenion Wärmespeicher', children=[grid_plot, grid_kpi, html.Div(style={"margin": "0rem", "padding-bottom": "14rem", "background": "linear-gradient(#333333, #47100a)"})], style=tab_style, selected_style=tab_selected_style),
-             dcc.Tab(label='Westhof Energiesystem', children=[energiefluss, html.Div(style={"margin": "0rem", "padding-bottom": "8rem", "background": "linear-gradient(#333333, #47100a)"})], style=tab_style, selected_style=tab_selected_style)
+             dcc.Tab(label='Westhof Energiesystem', children=[energiefluss, html.Div(style={"margin-top": "0rem", "padding-bottom": "8rem", "background": "linear-gradient(#333333, #47100a)"})], style=tab_style, selected_style=tab_selected_style)
              ], style={"padding-left": "12rem"}
             )]
     elif pathname == "/Gestern":
@@ -358,6 +436,7 @@ app.layout = dmc.MantineProvider(
          html.Div(id="page-content"),
          interval,
          interval2,
+         interval3,
      ],
  )
 
