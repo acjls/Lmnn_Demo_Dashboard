@@ -9,7 +9,7 @@ import pandas as pd
 import locale
 
 
-locale.setlocale(locale.LC_ALL, 'German')
+locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')
 
 
 ############## cards ##############
