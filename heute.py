@@ -188,7 +188,7 @@ def update_steam_power_heute(n_intervals):
 def random_energiefluss_values(n_intervals):
     power_ee = np.random.randint(500, 700)
     power_bhkw = np.random.randint(8000, 9000)
-    power_netz = np.random.randint(-200, 300)
+    power_netz = np.random.randint(-300, 100)
 
     power_input_total = power_ee + power_bhkw + power_netz
 

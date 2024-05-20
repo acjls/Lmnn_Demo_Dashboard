@@ -352,18 +352,18 @@ energiefluss = html.Div([
             ]),
             dbc.Row([
                 dbc.Col([
-                    html.Div(" ", style={"text-align": "center", "width": "100%", "padding-left": "2rem", "font-weight": "bold", "font-size": "20px"}),
-                    html.Img(src="/assets/Pfeil_blau_kurz.png", style={"width": "100%", "height": "auto", "padding-left": "2rem"})
-                ], className="d-flex flex-column justify-content-center align-items-center", width=2),
+                    #html.Div(" ", style={"text-align": "center", "width": "100%", "padding-left": "2rem", "font-weight": "bold", "font-size": "20px"}),
+                    #html.Img(src="/assets/Pfeil_blau_kurz.png", style={"width": "100%", "height": "auto", "padding-left": "2rem"})
+                ], className="d-flex flex-column justify-content-center align-items-center", width=1),
                 dbc.Col(html.Img(src="/assets/Speicher.png", style={"padding-left": "0rem", "padding-top": "0rem", "width": "100%", "height": "auto"}), width=7),
                 dbc.Col([
                     html.Div(id="waerme_power", style={"text-align": "center", "width": "100%", "padding-right": "3rem", "font-weight": "bold", "font-size": "20px"}),
                     html.Img(src="/assets/Pfeil_rot.png", style={"width": "100%", "height": "auto", "padding-right": "2rem"}),
-                ], className="d-flex flex-column justify-content-center align-items-center", width=3),
+                ], className="d-flex flex-column justify-content-center align-items-center", width=4),
             ]),
         ], className="d-flex flex-column justify-content-center align-items-center", style={"padding-bottom": "3rem"}, width=5),
         dbc.Col([
-            html.Img(src="/assets/Westhof_schmal.png", style={"width": "auto", "height": "100%", "padding-right": "1rem", "padding-left": "0rem"})
+            html.Img(src="/assets/Westhof_schmal.png", style={"width": "100%", "height": "auto", "padding-right": "1rem", "padding-left": "0rem"})
         ], width=3),  # Set the width to 3 columns to match the height of the first column
     ], no_gutters=True),
     grid_kpi_energiefluss_heute
