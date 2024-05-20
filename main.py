@@ -256,11 +256,12 @@ tab_selected_style = {
     Output("strom_power", "children"),
     Output("waerme_power", "children"),
     Output("value_temperature", "children"),
+    Output("value_production", "children"),
     [Input('interval-component3', 'n_intervals')]
 )
 def get_random_energiefluss_values(n_intervals):
-    value_ee, value_bhkw, value_netz, value_strom, value_waerme, value_temperature = random_energiefluss_values(n_intervals)
-    return value_ee, value_bhkw, value_netz, value_strom, value_waerme, value_temperature
+    value_ee, value_bhkw, value_netz, value_strom, value_waerme, value_temperature, value_production = random_energiefluss_values(n_intervals)
+    return value_ee, value_bhkw, value_netz, value_strom, value_waerme, value_temperature, value_production
 
 
 EE_card = get_EE_card()

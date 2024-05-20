@@ -13,7 +13,7 @@ def get_EE_card():
     EE_card = dmc.Card(
         [
             html.Div("Erneuerbare Energieversorgung (heute)", style={"font-size": "18px", "color": "#ffffff", "text-align": "center", "margin-bottom": "10px", "font-family": "'Nunito Sans', sans-serif"}),
-            html.Div("96 %", style={"font-size": "32px", "color": "#ffffff", "text-align": "center", "font-family": "'Nunito Sans', sans-serif"})
+            html.Div("98 %", style={"font-size": "32px", "color": "#ffffff", "text-align": "center", "font-family": "'Nunito Sans', sans-serif"})
         ],
         style={"background-color": "#333333", "width": "70%", "border": "2px solid #ffffff"},
         shadow="1px 1px 5px #b8b6b6",# Set the background color to grey and add left margin
@@ -25,7 +25,7 @@ def get_lebensmittel_card():
     lebensmittel_card = dmc.Card(
         [
             html.Div("Erneuerbar produzierte Lebensmittel (heute)", style={"font-size": "18px", "color": "#ffffff", "text-align": "center", "margin-bottom": "10px"}),
-            html.Div("56.000 kg", style={"font-size": "32px", "color": "#ffffff", "text-align": "center"})
+            html.Div(id="value_production", style={"font-size": "32px", "color": "#ffffff", "text-align": "center"})
         ],
         style={"background-color": "#333333", "width": "70%", "border": "2px solid #ffffff"},
         shadow="1px 1px 5px #b8b6b6",# Set the background color to grey and add left margin

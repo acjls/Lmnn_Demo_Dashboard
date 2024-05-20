@@ -6,6 +6,10 @@ import pytz
 import plotly.graph_objs as go
 import numpy as np
 import pandas as pd
+import locale
+
+
+locale.setlocale(locale.LC_ALL, 'German')
 
 
 ############## cards ##############
@@ -186,21 +190,33 @@ def update_steam_power_heute(n_intervals):
 
 
 def random_energiefluss_values(n_intervals):
-    power_ee = np.random.randint(500, 700)
-    power_bhkw = np.random.randint(8000, 9000)
+    # aktuelle Minute des Tages um die Produktionsmenge zu skalieren
+    now = dt.now()
+    minutes_of_day = now.hour * 60 + now.minute
+    production = minutes_of_day * 110
+
+    # Zufallswerte in schmaler Spannweite für Strominput
+    power_ee = np.random.randint(500, 600)
+    power_bhkw = np.random.randint(8400, 8600)
     power_netz = np.random.randint(-300, 100)
     temperature = np.random.randint(312, 315)
 
-    power_input_total = power_ee + power_bhkw + power_netz
+    # kein pv ee in der nacht
+    if (minutes_of_day < 360) or (minutes_of_day > 1300):
+        power_ee = 0
 
+    # Strominput addieren und aufteilen auf Strom und Wärme
+    power_input_total = power_ee + power_bhkw + power_netz
     power_strom = int(power_input_total * 0.6)
     power_waerme = int(power_input_total * 0.4 * 0.95)
 
+    # Ausgabe str
     power_ee_str = str(power_ee) + " kW"
     power_bhkw_str = str(power_bhkw) + " kW"
     power_netz_str = str(power_netz) + " kW"
     power_strom_str = str(power_strom) + " kW"
     power_waerme_str = str(power_waerme) + " kW"
     temperature_str = str(temperature) + " °C"
+    production_str = locale.format_string('%.0f', production, True) + " kg"
 
-    return power_ee_str, power_bhkw_str, power_netz_str, power_strom_str, power_waerme_str, temperature_str
+    return power_ee_str, power_bhkw_str, power_netz_str, power_strom_str, power_waerme_str, temperature_str, production_str
