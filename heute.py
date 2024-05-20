@@ -6,10 +6,6 @@ import pytz
 import plotly.graph_objs as go
 import numpy as np
 import pandas as pd
-import locale
-
-
-locale.setlocale(locale.LC_ALL, 'de_DE')
 
 
 ############## cards ##############
@@ -217,6 +213,14 @@ def random_energiefluss_values(n_intervals):
     power_strom_str = str(power_strom) + " kW"
     power_waerme_str = str(power_waerme) + " kW"
     temperature_str = str(temperature) + " °C"
-    production_str = locale.format_string('%.0f', production, True) + " kg"
+
+    if production >= 1000:
+        production_str = str(production)[0:1] + "." + str(production)[1:] + " kg"
+    if production >= 10000:
+        production_str = str(production)[0:2] + "." + str(production)[2:] + " kg"
+    if production >= 100000:
+        production_str = str(production)[0:3] + "." + str(production)[3:] + " kg"
+    if production >= 1000000:
+        production_str = str(production)[0:1] + "." + str(production)[1:4] + "." + str(production)[4:] + " kg"
 
     return power_ee_str, power_bhkw_str, power_netz_str, power_strom_str, power_waerme_str, temperature_str, production_str
