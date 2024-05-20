@@ -191,7 +191,7 @@ def update_steam_power_heute(n_intervals):
 
 def random_energiefluss_values(n_intervals):
     # aktuelle Minute des Tages um die Produktionsmenge zu skalieren
-    now = dt.now()
+    now = dt.now(pytz.timezone('Europe/Berlin'))
     minutes_of_day = now.hour * 60 + now.minute
     production = minutes_of_day * 110
 
