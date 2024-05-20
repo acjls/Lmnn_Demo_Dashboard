@@ -255,11 +255,12 @@ tab_selected_style = {
     Output("netz_power", "children"),
     Output("strom_power", "children"),
     Output("waerme_power", "children"),
+    Output("value_temperature", "children"),
     [Input('interval-component3', 'n_intervals')]
 )
 def get_random_energiefluss_values(n_intervals):
-    value_ee, value_bhkw, value_netz, value_strom, value_waerme = random_energiefluss_values(n_intervals)
-    return value_ee, value_bhkw, value_netz, value_strom, value_waerme
+    value_ee, value_bhkw, value_netz, value_strom, value_waerme, value_temperature = random_energiefluss_values(n_intervals)
+    return value_ee, value_bhkw, value_netz, value_strom, value_waerme, value_temperature
 
 
 EE_card = get_EE_card()
@@ -350,6 +351,11 @@ energiefluss = html.Div([
                     html.Img(src="/assets/Pfeil_blau_lang.png", style={"width": "100%", "height": "auto"}),
                 ], style={ "padding-top": "3rem"}, width=12),
             ]),
+            dbc.Col([  # Strom/Speicher
+                dbc.Col([
+                    html.Div(id="value_temperature", style={"text-align": "center", "width": "100%", "font-weight": "bold", "font-size": "20px", "color": "#c00000", "padding-right": "8rem", "display": "flex", "flex-direction": "column", "justify-content": "flex-end"}),
+                ], style={"padding-top": "3rem", "display": "flex", "flex-direction": "column", "justify-content": "flex-end"}, width=12),
+            ], style={"padding-top": "3rem", "display": "flex", "flex-direction": "column", "justify-content": "flex-end"}),
             dbc.Row([
                 dbc.Col([
                     #html.Div(" ", style={"text-align": "center", "width": "100%", "padding-left": "2rem", "font-weight": "bold", "font-size": "20px"}),
