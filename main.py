@@ -45,7 +45,7 @@ interval = dcc.Interval(
     )
 interval2 = dcc.Interval(
         id='interval-component2',
-        interval=10000,  # in milliseconds
+        interval=5000,  # in milliseconds
         n_intervals=0
     )
 interval3 = dcc.Interval(
@@ -137,11 +137,12 @@ def update_soc(n_intervals):
 @app.callback(
     Output('live-update-graph-bar_steam', 'figure'),
     Output("current-power_steam", "children"),
+    Output("current-power_steam2", "children"),
     [Input('interval-component2', 'n_intervals')]
 )
 def update_steam_power(n_intervals):
-    bar_fig, current_power_steam_text = update_steam_power_heute(n_intervals)
-    return bar_fig, current_power_steam_text
+    bar_fig, current_power_steam_text, current_power_steam_text2 = update_steam_power_heute(n_intervals)
+    return bar_fig, current_power_steam_text, current_power_steam_text2
 
 
 
@@ -254,14 +255,13 @@ tab_selected_style = {
     Output("bhkw_power", "children"),
     Output("netz_power", "children"),
     Output("strom_power", "children"),
-    Output("waerme_power", "children"),
     Output("value_temperature", "children"),
     Output("value_production", "children"),
     [Input('interval-component3', 'n_intervals')]
 )
 def get_random_energiefluss_values(n_intervals):
-    value_ee, value_bhkw, value_netz, value_strom, value_waerme, value_temperature, value_production = random_energiefluss_values(n_intervals)
-    return value_ee, value_bhkw, value_netz, value_strom, value_waerme, value_temperature, value_production
+    value_ee, value_bhkw, value_netz, value_strom, value_temperature, value_production = random_energiefluss_values(n_intervals)
+    return value_ee, value_bhkw, value_netz, value_strom, value_temperature, value_production
 
 
 EE_card = get_EE_card()
@@ -364,8 +364,8 @@ energiefluss = html.Div([
                 ], className="d-flex flex-column justify-content-center align-items-center", width=1),
                 dbc.Col(html.Img(src="/assets/Speicher.png", style={"padding-left": "0rem", "padding-top": "0rem", "width": "100%", "height": "auto"}), width=7),
                 dbc.Col([
-                    html.Div(id="waerme_power", style={"text-align": "center", "width": "100%", "padding-right": "3rem", "font-weight": "bold", "font-size": "20px"}),
-                    html.Img(src="/assets/Pfeil_rot.png", style={"width": "100%", "height": "auto", "padding-right": "2rem"}),
+                    html.Div(id="current-power_steam2", style={"text-align": "center", "width": "100%", "padding-right": "3rem", "font-weight": "bold", "font-size": "20px"}),
+                    html.Img(src="/assets/Pfeil_rot_Dampf.png", style={"width": "100%", "height": "auto", "padding-right": "2rem"}),
                 ], className="d-flex flex-column justify-content-center align-items-center", width=4),
             ]),
         ], className="d-flex flex-column justify-content-center align-items-center", style={"padding-bottom": "3rem"}, width=5),

@@ -63,8 +63,8 @@ def update_power_heute(n_intervals):
     current_minute = dt.now(pytz.timezone('Europe/Berlin')).hour * 60 + dt.now(pytz.timezone('Europe/Berlin')).minute
     power_cur = (df_soc.loc[current_minute, "State_of_Charge"] - df_soc.loc[current_minute-1, "State_of_Charge"])/100*CAPACITY*60
     power_cur = power_cur + np.random.randint(-50, 50)
-    if power_cur < 0:
-        power_cur = 0
+    if power_cur < 300:
+        power_cur = 300  + np.random.randint(-10, 10)
 
     # Create a Plotly bar plot
     bar_fig = go.Figure()
@@ -182,7 +182,7 @@ def update_steam_power_heute(n_intervals):
 
     current_power_steam_text = f"{round(power_cur,1)} t/h"
 
-    return bar_fig, current_power_steam_text
+    return bar_fig, current_power_steam_text, current_power_steam_text
 
 
 def random_energiefluss_values(n_intervals):
@@ -192,9 +192,9 @@ def random_energiefluss_values(n_intervals):
     production = minutes_of_day * 110
 
     # Zufallswerte in schmaler Spannweite für Strominput
-    power_ee = np.random.randint(500, 600)
-    power_bhkw = np.random.randint(8400, 8600)
-    power_netz = np.random.randint(-300, 100)
+    power_ee = np.random.randint(500, 550)
+    power_bhkw = np.random.randint(5450, 5600)
+    power_netz = np.random.randint(-1250, -1000)
     temperature = np.random.randint(312, 315)
 
     # kein pv ee in der nacht
@@ -203,15 +203,13 @@ def random_energiefluss_values(n_intervals):
 
     # Strominput addieren und aufteilen auf Strom und Wärme
     power_input_total = power_ee + power_bhkw + power_netz
-    power_strom = int(power_input_total * 0.6)
-    power_waerme = int(power_input_total * 0.4 * 0.95)
+    power_strom = int(power_input_total - 2700) # 2700 entspicht kWh Wärme bei ca 3.5 t/h Dampf
 
     # Ausgabe str
     power_ee_str = str(power_ee) + " kW"
     power_bhkw_str = str(power_bhkw) + " kW"
     power_netz_str = str(power_netz) + " kW"
     power_strom_str = str(power_strom) + " kW"
-    power_waerme_str = str(power_waerme) + " kW"
     temperature_str = str(temperature) + " °C"
 
     if production >= 1000:
@@ -223,4 +221,4 @@ def random_energiefluss_values(n_intervals):
     if production >= 1000000:
         production_str = str(production)[0:1] + "." + str(production)[1:4] + "." + str(production)[4:] + " kg"
 
-    return power_ee_str, power_bhkw_str, power_netz_str, power_strom_str, power_waerme_str, temperature_str, production_str
+    return power_ee_str, power_bhkw_str, power_netz_str, power_strom_str, temperature_str, production_str
