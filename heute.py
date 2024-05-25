@@ -185,17 +185,19 @@ def update_steam_power_heute(n_intervals):
     return bar_fig, current_power_steam_text, current_power_steam_text
 
 
-def random_energiefluss_values(n_intervals):
+def random_energiefluss_values(n_intervals, soc_text):
     # aktuelle Minute des Tages um die Produktionsmenge zu skalieren
     now = dt.now(pytz.timezone('Europe/Berlin'))
     minutes_of_day = now.hour * 60 + now.minute
     production = minutes_of_day * 110
 
     # Zufallswerte in schmaler Spannweite für Strominput
-    power_ee = np.random.randint(500, 550)
-    power_bhkw = np.random.randint(5450, 5600)
-    power_netz = np.random.randint(-1250, -1000)
-    temperature = np.random.randint(312, 315)
+    power_ee = np.random.randint(500, 530)
+    power_bhkw = np.random.randint(4450, 4550)
+    power_netz = 0 # np.random.randint(-1250, -1000)
+
+    soc_now = int(soc_text.split(" ")[0])
+    temperature = round(308 + (550-308) / 100 * soc_now)
 
     # kein pv ee in der nacht
     if (minutes_of_day < 360) or (minutes_of_day > 1300):

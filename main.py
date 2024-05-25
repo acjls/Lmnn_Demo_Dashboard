@@ -257,10 +257,11 @@ tab_selected_style = {
     Output("strom_power", "children"),
     Output("value_temperature", "children"),
     Output("value_production", "children"),
-    [Input('interval-component3', 'n_intervals')]
+    [Input('interval-component3', 'n_intervals'),
+     Input('current-soc', 'children')]
 )
-def get_random_energiefluss_values(n_intervals):
-    value_ee, value_bhkw, value_netz, value_strom, value_temperature, value_production = random_energiefluss_values(n_intervals)
+def get_random_energiefluss_values(n_intervals, soc_text):
+    value_ee, value_bhkw, value_netz, value_strom, value_temperature, value_production = random_energiefluss_values(n_intervals, soc_text)
     return value_ee, value_bhkw, value_netz, value_strom, value_temperature, value_production
 
 
